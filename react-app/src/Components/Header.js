@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import AccountActions from "../Actions/Account";
 import AccountFormDialog from "./AccountFormDialog";
@@ -60,4 +60,4 @@ const Header = props => {
     }
 }
 
-export default Header;
+export default withRouter(Header);

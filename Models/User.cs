@@ -9,7 +9,7 @@ namespace Lab4Webb
 {
     public class User : IdentityUser<int>
     {
-        public int HiScore { get; set; } = 0;
+        public HiScore HiScore { get; set; }
 
         [NotMapped]
         public string Password { get; set; }

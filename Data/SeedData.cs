@@ -32,6 +32,9 @@ namespace Lab4Webb.Data
             user.PasswordHash = passwordHasher.HashPassword(user, "User");
             var admin = new User { UserName = "Admin" };
             admin.PasswordHash = passwordHasher.HashPassword(admin, "Admin");
+            var rdm = new Random();
+            user.HiScore = new HiScore { SubmitDate = DateTime.UtcNow.AddMinutes(rdm.Next(21)) };
+            admin.HiScore = new HiScore { SubmitDate = DateTime.UtcNow.AddMinutes(rdm.Next(21)) };
 
             userManager.CreateAsync(user).Wait();
             userManager.CreateAsync(admin).Wait();

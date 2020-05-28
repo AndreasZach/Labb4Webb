@@ -1,35 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
+import { withRouter } from "react-router-dom";
 import Header from "./Header";
 import { Container } from "@material-ui/core";
 import Quiz from "./Quiz";
 
 const Home = props => {
-    
-    const [currentUser, setCurrentUser] = useState({
-      id: 0, 
-      userName: "",
-      isAdmin: {}
-    });
-    
-    const handleUserChange = (userData) => {
-      setCurrentUser({
-        id: userData.id,
-        userName: userData.userName,
-        isAdmin: userData.isAdmin
-      });
-      console.log(currentUser);
-    }
 
     return(
         <Container>
-          <h1>{currentUser.id ? currentUser.userName : "Not logged in"}</h1>
+          <h1>{props.currentUser.id ? props.currentUser.userName : "Not logged in"}</h1>
           <Header 
-          currentUser={currentUser} 
-          handleUserChange={handleUserChange} 
+          currentUser={props.currentUser} 
+          handleUserChange={props.handleUserChange} 
           />
           {
-          currentUser.id ?
-          <Quiz userId={currentUser.id} />
+          props.currentUser.id ?
+          <Quiz userId={props.currentUser.id} />
           :
           "You must be logged in to start the Quiz"
           }
@@ -37,4 +23,4 @@ const Home = props => {
     );
 }
 
-export default Home;
+export default withRouter(Home);

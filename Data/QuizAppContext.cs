@@ -18,8 +18,12 @@ namespace Lab4Webb
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //builder.Entity<User>().HasKey(x => x.HiScore.Id);
+
             base.OnModelCreating(builder);
         }
+
+        public DbSet<HiScore> HiScores { get; set; }
 
         public DbSet<Question> Questions { get; set; }
     }

@@ -13,7 +13,7 @@ const HiScores = props => {
     });
 
     const requestGetHiScores = async () => {
-        let response = await api.getAll("/Hiscore", false);
+        let response = await api.getAll("/Hiscores/", false);
         let result = await response.json();
         setHiScores(result);
         setIsLoaded(true);
@@ -25,6 +25,7 @@ const HiScores = props => {
             {
                 isLoaded ? 
                 hiScores.map((user, index) => {
+                    console.log(user.submitDate);
                     return(
                         <li 
                         key={index}  

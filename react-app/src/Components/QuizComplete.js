@@ -12,7 +12,7 @@ const QuizComplete = props => {
     })
 
     const requestPutHiScore = async () => {
-        let response = await api.put(props.userId, props.points, "/Hiscore/", false);
+        let response = await api.put(props.userId, props.points, "/Hiscores/", false);
         let result = await response.json();
         console.log(result);
     }

@@ -14,12 +14,12 @@ namespace Lab4Webb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HiscoreController : ControllerBase
+    public class HiScoresController : ControllerBase
     {
         private QuizAppContext _context;
-        private ILogger<HiscoreController> _logger;
+        private ILogger<HiScoresController> _logger;
 
-        public HiscoreController(QuizAppContext context, ILogger<HiscoreController> logger)
+        public HiScoresController(QuizAppContext context, ILogger<HiScoresController> logger)
         {
             _context = context;
             _logger = logger;
@@ -32,9 +32,10 @@ namespace Lab4Webb.Controllers
         public async Task<IEnumerable<Object>> Get()
         {
             var usersScore = await _context.Users
-                .Where(user => user.HiScore > 0)
+                .Where(user => user.HiScore.Score > 0)
                 .OrderByDescending(user => user.HiScore)
-                .Select(user => new { userName = user.UserName, hiScore = user.HiScore })
+                .ThenByDescending(user => user.HiScore.SubmitDate)
+                .Select(user => new { userName = user.UserName, hiScore = user.HiScore.Score, submitDate = user.HiScore.SubmitDate })
                 .ToListAsync();
             return usersScore;
         }
@@ -58,10 +59,11 @@ namespace Lab4Webb.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<ActionResult> Put(int id, [FromBody] int hiScore)
         {
-            var user = await _context.Users.FindAsync(id);
-            if(user.HiScore < hiScore)
+            var userScore = await _context.HiScores.FindAsync(id);
+            if(userScore.Score < hiScore)
             {
-                user.HiScore = hiScore;
+                userScore.Score = hiScore;
+                userScore.SubmitDate = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
 

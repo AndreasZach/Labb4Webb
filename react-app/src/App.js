@@ -1,16 +1,35 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route, withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Components/Home";
 import QuestionList from "./Components/QuestionList";
 import './App.css';
 
 function App() {
+  
+  const [currentUser, setCurrentUser] = useState({
+    id: 0, 
+    userName: "",
+    isAdmin: {}
+  });
+  
+  const handleUserChange = (userData) => {
+    setCurrentUser({
+      id: userData.id,
+      userName: userData.userName,
+      isAdmin: userData.isAdmin
+    });
+  }
+
 
   return (
     <Router>
       <Switch>
-        <Route exact path='/' component={withRouter(Home)} />
-        <Route  path='/manage-questions' component={withRouter(QuestionList)} />
+        <Route exact path='/'>
+          <Home currentUser={currentUser} handleUserChange={handleUserChange} />
+        </Route>
+        <Route  path='/manage-questions'>
+          <QuestionList />
+        </Route>
       </Switch>
     </Router>
   );
