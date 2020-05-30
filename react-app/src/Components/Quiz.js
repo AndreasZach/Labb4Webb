@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Button } from "@material-ui/core";
 import QuizItem from "./QuizItem";
 import QuizComplete from "./QuizComplete";
-import * as quizItemApi from "../Actions/QuizItems";
+import * as api from "../Actions/CrudActions";
 
 const Quiz = props => {
 
@@ -16,12 +16,13 @@ const Quiz = props => {
     };
 
     const [{quizItems, currentQuestion, points, isLoaded, inProgress, quizComplete}, 
-        setState] = useState(initialState)
+        setState] = useState(initialState);
 
     useEffect(() => {
         if(!isLoaded){
-            quizItemApi.quizItemAction(
-                quizItemApi.ACTION_TYPES.GET_ALL,
+            api.crudActions(
+                "/quizitems",
+                api.ACTION_TYPES.GET_ALL,
                 quizLoaded
             );
         }
@@ -32,29 +33,29 @@ const Quiz = props => {
             ...prevState,
             [propName]: value
         }));
-    }
+    };
 
     const quizLoaded = (data) =>{
         setNewState("quizItems", data);
         setNewState("isLoaded", true)
-    }
+    };
 
     const resetQuiz = () => {
         setState({...initialState});
-    }
+    };
 
-    const incrementPoints = () => {
-        setNewState("points", points + 1);
-    }
+    const incrementPoints = (timeLeft = 0) => {
+        setNewState("points", points + (1 + timeLeft));
+    };
 
     const goToNextQuestion = (resetQuizItem) => {
         if(currentQuestion + 1 >= quizItems.length){
-            setNewState("quizComplete", true)
+            setNewState("quizComplete", true);
         }else{
             setNewState("currentQuestion", currentQuestion + 1);
             resetQuizItem();
         }
-    }
+    };
 
     return(
         !quizComplete ?
@@ -77,6 +78,6 @@ const Quiz = props => {
         :
             <QuizComplete userId={props.userId} points={points} resetQuiz={resetQuiz} />
     );
-}
+};
 
 export default Quiz;

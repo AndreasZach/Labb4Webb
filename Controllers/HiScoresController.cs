@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using SQLitePCL;
 
 namespace Lab4Webb.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class HiScoresController : ControllerBase
@@ -28,7 +30,6 @@ namespace Lab4Webb.Controllers
         // GET: api/Hiscore
         [HttpGet]
         [Authorize]
-        [IgnoreAntiforgeryToken]
         public async Task<IEnumerable<Object>> Get()
         {
             var usersScore = await _context.Users
@@ -56,7 +57,6 @@ namespace Lab4Webb.Controllers
         // PUT: api/Hiscore/5
         [HttpPut("{id}")]
         [Authorize]
-        [IgnoreAntiforgeryToken]
         public async Task<ActionResult> Put(int id, [FromBody] int hiScore)
         {
             var userScore = await _context.HiScores.FindAsync(id);

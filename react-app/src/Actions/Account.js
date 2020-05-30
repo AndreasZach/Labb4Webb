@@ -1,4 +1,6 @@
+import React from "react";
 import * as api from "./Api";
+import { Redirect } from "react-router-dom";
 
 const ACTION_TYPES = {
     LOGIN: "LOGIN",
@@ -23,11 +25,18 @@ const accountAction = async (type, onSuccess, value = {userName: "", password: "
                 break;
         }
         // add any necessary checks here
-        let result = await response.json();
-        onSuccess(result);
-    } catch (error) {
-     console.log(error); // add proper error-handling here
+        if(() => api.checkStatus(response.status)){
+            let result = await response.json();
+            if(type === ACTION_TYPES.LOGIN || type === ACTION_TYPES.REGISTER)
+                localStorage.setItem("token", result.token);
+            if(type === ACTION_TYPES.LOGOUT)
+                localStorage.setItem("token", result.token);
+            onSuccess(result);
+        }
+    }catch (error) {
+        alert(error);
+        return <Redirect to="/" />
     }
 }
 
-export default {accountAction, ACTION_TYPES};
+export default { accountAction, ACTION_TYPES };

@@ -5,18 +5,19 @@ import QuestionList from "./Components/QuestionList";
 import './App.css';
 
 function App() {
-  
   const [currentUser, setCurrentUser] = useState({
     id: 0, 
     userName: "",
-    isAdmin: {}
+    isAdmin: {},
+    token: ""
   });
   
   const handleUserChange = (userData) => {
     setCurrentUser({
       id: userData.id,
       userName: userData.userName,
-      isAdmin: userData.isAdmin
+      isAdmin: userData.isAdmin,
+      token: userData.token
     });
   }
 

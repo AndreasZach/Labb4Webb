@@ -42,13 +42,24 @@ const QuestionItem = props => {
         if(!values.questionString)
             type = props.api.ACTION_TYPES.POST
         
-        props.api.crudActions("/questions/", type, props.updateQuestions, props.question.id, values);
+        props.api.crudActions(
+            "/questions/", 
+            type, 
+            props.updateQuestions, 
+            props.question.id, 
+            values
+        );
         toggleOpen();
         props.updateQuestions();
     };
 
     const handleDelete = () => {
-        props.api.crudActions("/questions/", props.api.ACTION_TYPES.DELETE, props.updateQuestions, props.question.id);
+        props.api.crudActions(
+            "/questions/", 
+            props.api.ACTION_TYPES.DELETE, 
+            props.updateQuestions, 
+            props.question.id
+        );
         props.updateQuestions();
     };
 

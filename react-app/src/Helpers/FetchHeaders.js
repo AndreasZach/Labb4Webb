@@ -1,12 +1,10 @@
-import * as cookieManager from "../Helpers/CookieManager";
-
-const setHeaders = (needAuth = false) => {
+const setHeaders = () => {
     let headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    if(needAuth)
-        headers['X-XSRF-TOKEN'] = cookieManager.getCookie('XSRF-REQUEST-TOKEN');
+    if(localStorage.getItem("token"))
+        headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
     return headers;
 };
 

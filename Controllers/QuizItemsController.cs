@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lab4Webb.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lab4Webb.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
@@ -25,10 +27,10 @@ namespace Lab4Webb.Controllers
             _ctx = ctx;
             _logger = logger;
         }
+        
         // GET: api/QuizItems
         [HttpGet]
         [Authorize]
-        [IgnoreAntiforgeryToken]
         public async Task<IEnumerable<QuizItem>> Get()
         {
             

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Button} from "@material-ui/core";
 import HiScores from "./HiScores";
-import * as api from "../Actions/Api";
+import * as api from "../Actions/CrudActions";
 
 const QuizComplete = props => {
     const [showHiScores, setShowHiScores] = useState(false);
@@ -9,17 +9,21 @@ const QuizComplete = props => {
     useEffect(() => {
         if(!showHiScores)
             requestPutHiScore();
-    })
-
+    });
+    
     const requestPutHiScore = async () => {
-        let response = await api.put(props.userId, props.points, "/Hiscores/", false);
-        let result = await response.json();
-        console.log(result);
-    }
+        await api.crudActions(
+            "/Hiscores/", 
+            api.ACTION_TYPES.PUT,
+            null,
+            props.userId, 
+            props.points,
+        );
+    };
 
     return(
         showHiScores ?
-            <HiScores goToId={props.userId}/>
+            <HiScores />
         :
         <div>
             <h1>You've completed the Quiz!</h1>

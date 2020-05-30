@@ -38,13 +38,7 @@ const Header = props => {
                     )}
                 >
                     Logout
-                </Button>
-                <Link className="no-underline" to="/">
-                    <Button>
-                        Home
-                    </Button>
-                </Link>
-                
+                </Button>                
                 {
                 props.currentUser.isAdmin ?
                     <Link className="no-underline" to="/manage-questions">

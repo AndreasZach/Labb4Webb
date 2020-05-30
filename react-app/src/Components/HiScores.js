@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import * as api from "../Actions/Api";
+import * as api from "../Actions/CrudActions";
 
 const HiScores = props => {
     const [hiScores, setHiScores] = useState([]);
@@ -13,9 +13,11 @@ const HiScores = props => {
     });
 
     const requestGetHiScores = async () => {
-        let response = await api.getAll("/Hiscores/", false);
-        let result = await response.json();
-        setHiScores(result);
+        await api.crudActions(
+            "/Hiscores/", 
+            api.ACTION_TYPES.GET_ALL,
+            (result) => {setHiScores(result);},
+            );
         setIsLoaded(true);
     };
 

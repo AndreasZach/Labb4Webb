@@ -1,26 +1,32 @@
-import React, {useState} from "react";
-import { getById } from "../Actions/Api";
-import {Button} from "@material-ui/core";
+import React, { useState } from "react";
+import * as api from "../Actions/CrudActions";
+import { Button } from "@material-ui/core";
+import Timer from "./Timer";
 
 const QuizItem = props => {
     const initialState = {
         correctAnswer: {},
-        completed: false
+        completed: false,
+        timeLeft: 30
     };
-    const [{correctAnswer, completed}, setState] = useState(initialState);
+    const [{correctAnswer, completed, timeLeft}, setState] = useState(initialState);
 
     const resetState = () => {
         setState({...initialState});
     };
 
     const handleClick = async value => {
-        let response = await getById(props.quizItemProp.questionId, "/questions/", false);
-        let result = await response.json();        
-        if(result.answer === value)
-            props.incrementPoints();
+        let apiResult = await api.crudActions(
+            "/questions/", 
+            api.ACTION_TYPES.GET_ID,
+            null,
+            props.quizItemProp.questionId
+            );
+        if(apiResult.answer === value)
+            props.incrementPoints(timeLeft);
         setState(prevState => ({
             ...prevState, 
-            completed: true
+            ...initialState
         }));    
     };
 
@@ -47,6 +53,7 @@ const QuizItem = props => {
                     );
                 })
             }
+            <Timer setQuizItemState={setState} completed={completed} timeLeft={timeLeft} />
             {
                 completed ?
                 <Button onClick={() => props.nextQuestion(resetState)} variant="outlined" color="primary">

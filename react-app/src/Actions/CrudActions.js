@@ -1,4 +1,6 @@
+import React from "react";
 import * as api from "./Api";
+import { Redirect } from "react-router-dom";
 
 export const ACTION_TYPES = {
     GET_ALL: "GET_ALL",
@@ -8,41 +10,39 @@ export const ACTION_TYPES = {
     DELETE: "DELETE"
 }
 
-export const crudActions = async (route, type, onSuccess, id , model) => {
+export const crudActions = async (route, type, onSuccess , id = 0 , model = null) => {
     try {
         let response;
         switch (type) {
             case ACTION_TYPES.GET_ALL:
-                response = await api.getAll(route, false);
+                response = await api.getAll(route);
                 break;
             case ACTION_TYPES.GET_ID:
-                response = await api.getById(id, route, false);
+                response = await api.getById(id, route);
                 break;
             case ACTION_TYPES.POST:
-                response = await api.post(model, route, true);
+                response = await api.post(model, route);
                 break;
             case ACTION_TYPES.PUT:
-                response = await api.put(id, model, route, true);
+                response = await api.put(id, model, route);
                 break;
             case ACTION_TYPES.DELETE:
-                response = await api.Delete(id, route, true);
+                response = await api.Delete(id, route);
                 break;
             default:
                 break;
         }
-        // add any necessary checks here
-        if(type === ACTION_TYPES.GET_ALL){
-            
-            let result = await response.json();
-            onSuccess(result);
-            
-        }else{
-            console.log(await response.text());
-            onSuccess();
-            // Add logic for empty responses
+        let result;
+        if(() => api.checkStatus(response.status)){
+            result =  await response.json();
+            if(onSuccess)
+                onSuccess(result);
+            else
+                return result
         }
     } catch (error) {
-     console.log(error); // add proper error-handling here
+        alert(error);
+        return <Redirect to="/" />
     }
 }
 

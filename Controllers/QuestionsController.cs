@@ -9,9 +9,11 @@ using Lab4Webb;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Lab4Webb.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [EnableCors]
     [ApiController]
@@ -28,13 +30,12 @@ namespace Lab4Webb.Controllers
 
         // GET: api/Questions
         [Authorize(Roles = "administrator")]
-        [IgnoreAntiforgeryToken]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions() => await _context.Questions.ToListAsync();
 
         // GET: api/Questions/5
-        [IgnoreAntiforgeryToken]
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Question>> GetQuestion(int id)
         {
             var question = await _context.Questions.FindAsync(id);
@@ -51,7 +52,6 @@ namespace Lab4Webb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize(Roles = "administrator")]
-        [IgnoreAntiforgeryToken]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestion(int id, Question question)
         {
@@ -74,18 +74,17 @@ namespace Lab4Webb.Controllers
                 }
                 else
                 {
-                    throw;
+                    throw; //Add proper REST response
                 }
             }
 
-            return NoContent();
+            return Ok(new { Success = true });
         }
 
         // POST: api/Questions
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize(Roles = "administrator")]
-        [IgnoreAntiforgeryToken]
         [HttpPost]
         public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
@@ -110,7 +109,7 @@ namespace Lab4Webb.Controllers
             _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
 
-            return question;
+            return Ok( new { Success = true });
         }
 
         private bool QuestionExists(int id) => _context.Questions.Any(e => e.Id == id);
