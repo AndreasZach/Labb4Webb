@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { Button, Grid } from "@material-ui/core";
 import * as api from "../Actions/CrudActions";
 
 const HiScores = props => {
@@ -22,27 +24,37 @@ const HiScores = props => {
     };
 
     return (
-        <div>
-            <ol>
+        <Grid container justify={"center"} alignItems={"center"}>
+            <Grid item xs={12}>
+                <Link className="no-underline" to="/">
+                    <Button 
+                    variant={"outlined"}
+                    color={"primary"}
+                    fullWidth
+                    >
+                        Return to homepage
+                    </Button>
+                </Link>
+            </Grid>
             {
                 isLoaded ? 
                 hiScores.map((user, index) => {
                     console.log(user.submitDate);
                     return(
-                        <li 
+                        <div 
                         key={index}  
                         >
-                            <div>Username: {user.userName}</div>
-                            <div>Best Score: {user.hiScore}</div>
-                        </li>
+                            <Grid container item alignItems={"center"}>
+                                <h3>{index + 1}. {user.userName}: {user.hiScore} points.</h3>
+                            </Grid>
+                        </div>
                     );
                 })
                 :
                 "Loading HiScores"
             }  
-            </ol>
-        </div>
+        </Grid>
     );
 }
 
-export default HiScores;
+export default withRouter(HiScores);

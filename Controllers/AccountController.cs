@@ -90,7 +90,7 @@ namespace Lab4Webb.Controllers
                     var signinResult = await _signInManager.PasswordSignInAsync(user.UserName, user.Password, false, false);
                     if (signinResult.Succeeded)
                     {   
-                        response = await CreateResponse(user.UserName); // remove duplicate code with helpmer method?
+                        response = await CreateResponse(user.UserName);
                     }
                     else
                         response = await CreateResponse();
@@ -104,21 +104,16 @@ namespace Lab4Webb.Controllers
 
         private async Task<string> GenerateJSONWebToken(User user)
         {
-            //Hash Security Key Object from the JWT Key
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            //Generate list of claims with general and universally recommended claims
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
-            //Retreive roles for user and add them to the claims listing
             var roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(r => new Claim(ClaimsIdentity.DefaultRoleClaimType, r)));
-            //Generate final token adding Issuer and Subscriber data, claims, expriation time and Key
             var token = new JwtSecurityToken(_config["Jwt:Issuer"]
                 , _config["Jwt:Issuer"],
                 claims,
@@ -126,8 +121,6 @@ namespace Lab4Webb.Controllers
                 expires: DateTime.Now.AddHours(5),
                 signingCredentials: credentials
             );
-
-            //Return token string
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
@@ -142,7 +135,7 @@ namespace Lab4Webb.Controllers
                 return new { currentUser.Id, currentUser.UserName, isAdmin = userRoles.Contains("administrator"), token = jwtToken};
             }
             else
-                return new { Id = 0, UserName = "" };
+                return new { Id = 0, UserName = "", token = ""};
         }
     }
 }

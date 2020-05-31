@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, Fragment} from "react";
 import { 
     ButtonGroup, 
     Button, 
@@ -7,7 +7,8 @@ import {
     DialogContent, 
     DialogContentText, 
     DialogActions, 
-    TextField } from "@material-ui/core";
+    TextField, 
+    Grid} from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
 
 const QuestionItem = props => {
@@ -19,11 +20,9 @@ const QuestionItem = props => {
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState(initialState);
     useEffect(() => {
-        if(props.question.id)
+        if(props.question)
             setValues(props.question);
-        else
-            setOpen(true);
-    }, []);
+    }, [setValues, props.question]);
 
     const toggleOpen = () => {
         setOpen(!open);
@@ -37,20 +36,25 @@ const QuestionItem = props => {
             ...fieldValue});
     }
 
-    const handleSubmit = e => {
-        let type = props.api.ACTION_TYPES.PUT;
-        if(!values.questionString)
-            type = props.api.ACTION_TYPES.POST
-        
-        props.api.crudActions(
-            "/questions/", 
-            type, 
-            props.updateQuestions, 
-            props.question.id, 
-            values
-        );
-        toggleOpen();
-        props.updateQuestions();
+    const handleSubmit = () => {
+        console.log(values)
+        if(!props.question){
+            props.api.crudActions(
+                "/questions/",
+                props.api.ACTION_TYPES.POST,
+                props.updateQuestions,
+                0,
+                values
+            )
+        }else{
+            props.api.crudActions(
+                "/questions/", 
+                props.api.ACTION_TYPES.PUT, 
+                props.updateQuestions, 
+                props.question.id,
+                values
+            );
+        }
     };
 
     const handleDelete = () => {
@@ -64,58 +68,66 @@ const QuestionItem = props => {
     };
 
     return(
-        <div>
-            <h4>{props.question.questionString}</h4>
+        <Fragment>
             {
-                props.question.id ?
-                    <ButtonGroup>
-                        <Button onClick={toggleOpen}>
-                            <Edit />
+                props.question ?
+                    <Fragment>
+                        <Grid container justify="center" item xs={6}>
+                            <h4>{props.question.questionString}</h4>
+                        </Grid>
+                        <Grid container justify="center" item xs={6}>
+                            <ButtonGroup size="small">
+                                <Button variant="outlined" color="primary" onClick={toggleOpen}>
+                                    <Edit color="primary" />
+                                </Button>
+                                <Button variant={"outlined"}  color={"secondary"}>
+                                    <Delete color={"secondary"} onClick={handleDelete} />
+                                </Button>
+                            </ButtonGroup>
+                        </Grid>
+                    </Fragment>
+                :
+                    <Grid item xs={6}>   
+                        <Button variant="outlined" color="primary" onClick={toggleOpen} fullWidth>
+                            Create
                         </Button>
-                        <Button>
-                            <Delete onClick={handleDelete} />
-                        </Button>
-                    </ButtonGroup>
-            :
-                null
+                    </Grid>
             }
             <Dialog open={open} onClose={toggleOpen} aria-labelledby="form-dialog-title">
-                  <DialogTitle id="form-dialog-title">Question Form</DialogTitle>
-                  <DialogContent>
-                  <DialogContentText>
-                    Enter question details.
+                <DialogTitle id="form-dialog-title">Question Form</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Enter question details.
                   </DialogContentText>
-                  <TextField
-                    name = "questionString"
-                    variant = "outlined"
-                    label = "Question"
-                    value = {values.questionString}
-                    onChange = {handleChange}
-                    fullWidth
-                    />
-                    {/*...(errors.userName && { error: true, helperText: errors.fullName })*/}
                     <TextField
-                    name = "answer"
-                    variant = "outlined"
-                    label = "Answer"
-                    value = {values.answer}
-                    onChange = {handleChange}
-                    fullWidth
+                        name="questionString"
+                        variant="outlined"
+                        label="Question"
+                        value={values.questionString}
+                        onChange={handleChange}
+                        fullWidth
                     />
-                    {/*...(errors.password && { error: true, helperText: errors.password })*/}
+                    <TextField
+                        name="answer"
+                        variant="outlined"
+                        label="Answer"
+                        value={values.answer}
+                        onChange={handleChange}
+                        fullWidth
+                    />
                 </DialogContent>
                 <DialogActions>
-                <ButtonGroup>
-                  <Button onClick={toggleOpen} color="primary">
-                    Cancel
+                    <ButtonGroup>
+                        <Button onClick={toggleOpen} color="primary">
+                            Cancel
                   </Button>
-                  <Button onClick={handleSubmit} color="primary">
-                    Submit
+                        <Button onClick={handleSubmit} color="primary">
+                            Submit
                   </Button>
-                </ButtonGroup>
+                    </ButtonGroup>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Fragment>
     );
 }
 

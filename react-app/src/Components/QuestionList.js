@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import * as questionApi from "../Actions/CrudActions"
-import QuizItem from "./QuestionItem";
+import QuestionItem from "./QuestionItem";
 
 const ManageQuestions = () => {
     const [questions, setQuestions] = useState([]);
@@ -20,29 +20,40 @@ const ManageQuestions = () => {
         setIsLoaded(true);
     };
 
+    const questionValidation = (questionField) => {
+        return questionField.trim() ? "" : "This field cannot be empty";
+    };
+
     return(
-        <div>
-            <Link className="no-underline" to="/">
-                    <Button>
+        <Grid container justify="center" alignItems={"center"} spacing={2} item xs={10}>
+            <Grid item xs={6}>
+                <Link className="no-underline" to="/">
+                    <Button variant={"outlined"} color={"primary"} fullWidth>
                         Home
                     </Button>
-            </Link>
+                </Link>
+            </Grid> 
+            {/*This QuestionItem is not passed a question prop so when clicked, it will open a blank form
+                where the user can create a new question.*/}
+            <QuestionItem api={questionApi} updateQuestions={fetchQuestions} />
             {
                 isLoaded ? 
                     questions.map((question, index) => {
                         return(
-                            <QuizItem 
-                            key={index}
-                            question={question} 
-                            api={questionApi} 
-                            updateQuestions = {fetchQuestions}
-                            />
+                            <Grid key={index} container justify="center" item xs={12}>
+                                <QuestionItem
+                                question={question} 
+                                api={questionApi} 
+                                updateQuestions = {fetchQuestions}
+                                questionValidation={(data) => questionValidation(data)}
+                                />
+                            </Grid>
                         );
                     })
                 :
                 "Loading..."
             }
-        </div>
+        </Grid>
     );
 }
 

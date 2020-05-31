@@ -1,6 +1,4 @@
-import React from "react";
 import * as api from "./Api";
-import { Redirect } from "react-router-dom";
 
 const ACTION_TYPES = {
     LOGIN: "LOGIN",
@@ -8,7 +6,7 @@ const ACTION_TYPES = {
     REGISTER: "REGISTER"
 }
 
-const accountAction = async (type, onSuccess, value = {userName: "", password: ""}) => {
+const accountAction = async (type, onSuccess, value) => {
     try {
         let response;
         switch (type) {
@@ -25,17 +23,17 @@ const accountAction = async (type, onSuccess, value = {userName: "", password: "
                 break;
         }
         // add any necessary checks here
-        if(() => api.checkStatus(response.status)){
+        if(response.status === 200 || response.status === 201){
             let result = await response.json();
-            if(type === ACTION_TYPES.LOGIN || type === ACTION_TYPES.REGISTER)
-                localStorage.setItem("token", result.token);
-            if(type === ACTION_TYPES.LOGOUT)
-                localStorage.setItem("token", result.token);
-            onSuccess(result);
+            console.log(result);
+            localStorage.setItem("userData", JSON.stringify(result));
+            console.log(JSON.parse(localStorage.getItem("userData")));
+            onSuccess();
         }
+        //else
+        //    throw new Error(response.status);
     }catch (error) {
-        alert(error);
-        return <Redirect to="/" />
+        api.handleError(error);
     }
 }
 

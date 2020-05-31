@@ -1,6 +1,4 @@
-import React from "react";
 import * as api from "./Api";
-import { Redirect } from "react-router-dom";
 
 export const ACTION_TYPES = {
     GET_ALL: "GET_ALL",
@@ -10,7 +8,7 @@ export const ACTION_TYPES = {
     DELETE: "DELETE"
 }
 
-export const crudActions = async (route, type, onSuccess , id = 0 , model = null) => {
+export const crudActions = async (route, type, onSuccess , id , model = null) => {
     try {
         let response;
         switch (type) {
@@ -33,16 +31,16 @@ export const crudActions = async (route, type, onSuccess , id = 0 , model = null
                 break;
         }
         let result;
-        if(() => api.checkStatus(response.status)){
-            result =  await response.json();
+        if(response.status === 200 || response.status === 201){
+            result = await response.json();
             if(onSuccess)
                 onSuccess(result);
             else
-                return result
-        }
+                return result;
+        }//else
+         //   throw new Error(response.status);
     } catch (error) {
-        alert(error);
-        return <Redirect to="/" />
+        api.handleError(error);
     }
 }
 

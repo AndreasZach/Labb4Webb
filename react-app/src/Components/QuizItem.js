@@ -1,69 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import * as api from "../Actions/CrudActions";
-import { Button } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import Timer from "./Timer";
 
 const QuizItem = props => {
     const initialState = {
         correctAnswer: {},
-        completed: false,
-        timeLeft: 30
+        completed: false
     };
-    const [{correctAnswer, completed, timeLeft}, setState] = useState(initialState);
+    const [{correctAnswer, completed}, setState] = useState(initialState);
 
     const resetState = () => {
         setState({...initialState});
     };
 
     const handleClick = async value => {
+        console.log(value)
         let apiResult = await api.crudActions(
             "/questions/", 
             api.ACTION_TYPES.GET_ID,
             null,
             props.quizItemProp.questionId
             );
+            console.log(apiResult);
         if(apiResult.answer === value)
-            props.incrementPoints(timeLeft);
+            props.incrementPoints();
         setState(prevState => ({
             ...prevState, 
-            ...initialState
+            completed: true
         }));    
     };
 
     let completedBtnColor = correctAnswer ? "primary" : "secondary";
     let btnColor = completed ? completedBtnColor : "default";
     return(
-        <div>
-            <p>{props.quizItemProp.questionString}</p>
+        <Fragment>
+            <Grid container justify="center" item xs={12}>
+                <p>{props.quizItemProp.questionString}</p>
+            </Grid>
+            
             {
                 props.quizItemProp.answerOptions.map((answer, index) => {
                     return (
-                    <div key={index}>
-                        <Button
-                        onClick={() => handleClick(answer)}
-                        variant={(completed ? "contained" : "outlined")}
-                        color={btnColor}
-                        disabled={completed}
-                        value={answer}
-                        label={answer}
-                        >
-                            {answer}
-                        </Button>
-                    </div>
+                        <Grid key={index} item xs={12}>
+                            <Button 
+                            onClick={() => handleClick(answer)}
+                            variant={(completed ? "contained" : "outlined")}
+                            color={btnColor}
+                            disabled={completed}
+                            value={answer}
+                            label={answer}
+                            fullWidth
+                            >
+                                {answer}
+                            </Button>
+                        </Grid>
                     );
                 })
             }
-            <Timer setQuizItemState={setState} completed={completed} timeLeft={timeLeft} />
             {
                 completed ?
-                <Button onClick={() => props.nextQuestion(resetState)} variant="outlined" color="primary">
-                    Next
-                </Button> 
+                    <Grid container justify="flex-start" item xs={12}>
+                        <Button onClick={() => props.nextQuestion(resetState)} variant="contained" color="primary" fullWidth>
+                            Next
+                        </Button> 
+                    </Grid>
                 :
-                null
+                    null
             }
-        </div>
+        </Fragment>
     );
 }
+//<Timer setQuizItemState={setState} completed={completed} />
+
 
 export default QuizItem;

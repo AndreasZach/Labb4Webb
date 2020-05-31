@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
@@ -29,7 +30,6 @@ namespace Lab4Webb
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
@@ -37,7 +37,7 @@ namespace Lab4Webb
             {
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequiredUniqueChars = 0;
-                opts.Password.RequiredLength = 3;
+                opts.Password.RequiredLength = 4;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireDigit = false;
@@ -66,7 +66,6 @@ namespace Lab4Webb
             services.AddCors();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -95,10 +94,10 @@ namespace Lab4Webb
 
             app.UseSpa(opt =>
             {
+                opt.Options.StartupTimeout = TimeSpan.FromMinutes(5);
                 opt.Options.SourcePath = "react-app";
                 if (env.IsDevelopment())
                 {
-                    opt.Options.StartupTimeout = TimeSpan.FromSeconds(120);
                     opt.UseReactDevelopmentServer(npmScript: "start");
                 }
             });

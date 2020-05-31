@@ -55,10 +55,11 @@ export const Delete = async (id, route) => fetch(baseUrl + route + id, {
     credentials: 'include'
 });
 
-export const checkStatus = (status) => {
-    if(status === 200 || status === 201){
-        return true;
-    }else{
-        throw new Error("Failed communicating with database with error-code: " + status)
-    }
+export const handleError = (status) => {
+    if(status == 401)
+        alert("You must be logged in to access this page.");
+    else if(status == 403)
+        alert("You do not have the required role to access this page.");
+    else
+        alert("An error occured while communicating with the database. (Error code: " + status);
 };
