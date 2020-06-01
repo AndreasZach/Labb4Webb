@@ -20,10 +20,6 @@ const ManageQuestions = () => {
         setIsLoaded(true);
     };
 
-    const questionValidation = (questionField) => {
-        return questionField.trim() ? "" : "This field cannot be empty";
-    };
-
     return(
         <Grid container justify="center" alignItems={"center"} spacing={2} item xs={10}>
             <Grid item xs={6}>
@@ -33,9 +29,12 @@ const ManageQuestions = () => {
                     </Button>
                 </Link>
             </Grid> 
-            {/*This QuestionItem is not passed a question prop so when clicked, it will open a blank form
+            {/*This QuestionItem is not passed a question prop, so when clicked, it will open a blank form
                 where the user can create a new question.*/}
-            <QuestionItem api={questionApi} updateQuestions={fetchQuestions} />
+            <QuestionItem 
+            api={questionApi} 
+            updateQuestions={fetchQuestions} 
+            />
             {
                 isLoaded ? 
                     questions.map((question, index) => {
@@ -45,7 +44,6 @@ const ManageQuestions = () => {
                                 question={question} 
                                 api={questionApi} 
                                 updateQuestions = {fetchQuestions}
-                                questionValidation={(data) => questionValidation(data)}
                                 />
                             </Grid>
                         );

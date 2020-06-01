@@ -28,12 +28,10 @@ namespace Lab4Webb.Controllers
             _logger = logger;
         }
 
-        // GET: api/Questions
         [Authorize(Roles = "administrator")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions() => await _context.Questions.ToListAsync();
 
-        // GET: api/Questions/5
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<Question>> GetQuestion(int id)
@@ -48,9 +46,6 @@ namespace Lab4Webb.Controllers
             return question;
         }
 
-        // PUT: api/Questions/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize(Roles = "administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestion(int id, Question question)
@@ -74,16 +69,13 @@ namespace Lab4Webb.Controllers
                 }
                 else
                 {
-                    throw; //Add proper REST response
+                    throw;
                 }
             }
 
             return Ok(new { Success = true });
         }
 
-        // POST: api/Questions
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize(Roles = "administrator")]
         [HttpPost]
         public async Task<ActionResult<Question>> PostQuestion(Question question)
@@ -94,7 +86,6 @@ namespace Lab4Webb.Controllers
             return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
         }
 
-        // DELETE: api/Questions/5
         [Authorize(Roles = "administrator")]
         [IgnoreAntiforgeryToken]
         [HttpDelete("{id}")]

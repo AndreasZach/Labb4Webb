@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { Grid } from "@material-ui/core";
 import Home from "./Components/Home";
 import Quiz from "./Components/Quiz";
@@ -30,7 +30,6 @@ function App() {
   useEffect(() => {
     if(localStorage.getItem("userData")){
       let newData = JSON.parse(localStorage.getItem("userData"));
-      console.log(newData.id)
       setCurrentUser(prevState => ({
           ...prevState,
           ...newData
@@ -42,7 +41,7 @@ function App() {
   return (
     <Grid container justify={"center"} alignItems={"center"} spacing={4}>
       <Router>
-        <Grid container justify="center" item xs={12}>
+        <Grid container justify="center" item xs={10}>
           <Header 
             currentUser={currentUser} 
             handleUserChange={handleUserChange} 
@@ -57,7 +56,7 @@ function App() {
               currentUser.id ?
                 <Quiz userId={currentUser.id} />
               :
-                <Redirect to="/access-denied" />
+                <Redirect to="/" />
             }
           </Route>
           <Route  path='/manage-questions'>
@@ -73,7 +72,7 @@ function App() {
             currentUser.id ?
               <HiScores />
             :
-              <Redirect to="/access-denied" />
+              <Redirect to="/" />
           }
           </Route>
           <Route path="/access-denied">

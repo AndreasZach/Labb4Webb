@@ -22,16 +22,17 @@ const accountAction = async (type, onSuccess, value) => {
             default:
                 break;
         }
-        // add any necessary checks here
         if(response.status === 200 || response.status === 201){
             let result = await response.json();
-            console.log(result);
+            if(result.error){
+                alert(result.error)
+                return;
+            }
             localStorage.setItem("userData", JSON.stringify(result));
-            console.log(JSON.parse(localStorage.getItem("userData")));
             onSuccess();
         }
-        //else
-        //    throw new Error(response.status);
+        else
+            throw new Error(response.status);
     }catch (error) {
         api.handleError(error);
     }

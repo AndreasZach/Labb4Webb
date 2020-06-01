@@ -37,8 +37,8 @@ export const crudActions = async (route, type, onSuccess , id , model = null) =>
                 onSuccess(result);
             else
                 return result;
-        }//else
-         //   throw new Error(response.status);
+        }else
+           throw new Error(response.status);
     } catch (error) {
         api.handleError(error);
     }

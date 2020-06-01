@@ -81,6 +81,9 @@ namespace Lab4Webb.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userExists = await _userManager.FindByNameAsync(user.UserName);
+                if (userExists != null)
+                    return Ok(new { Error = "An account with that username already exists." });
                 var newUser = new User { UserName = user.UserName };
                 newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, user.Password);
                 var result = await _userManager.CreateAsync(newUser);

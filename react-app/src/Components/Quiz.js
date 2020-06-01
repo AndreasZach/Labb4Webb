@@ -81,7 +81,9 @@ const Quiz = props => {
                     />
                 </Grid>
             :
+            <Grid container justify="center" item xs={12}>
                 <p>Loading Quiz...</p>
+            </Grid>
             
         :
             <QuizComplete userId={props.userId} points={points} resetQuiz={resetQuiz} />

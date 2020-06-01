@@ -1,17 +1,18 @@
 import React, {useState, useEffect, Fragment} from "react";
-import { 
-    ButtonGroup, 
-    Button, 
-    Dialog,
-    DialogTitle,
-    DialogContent, 
-    DialogContentText, 
-    DialogActions, 
-    TextField, 
-    Grid} from "@material-ui/core";
+import { ButtonGroup, Button, Dialog, DialogTitle, DialogContent, 
+    DialogContentText, DialogActions, TextField, Grid, makeStyles} from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+      '& .MuiTextField-root': {
+        margin: theme.spacing(1),
+      },
+    },
+  }));
+
 const QuestionItem = props => {
+    const classes = useStyles();
 
     const initialState = {
         questionString: "",
@@ -19,6 +20,8 @@ const QuestionItem = props => {
     };
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState(initialState);
+    const [errors, setErrors] = useState({});
+
     useEffect(() => {
         if(props.question)
             setValues(props.question);
@@ -28,32 +31,57 @@ const QuestionItem = props => {
         setOpen(!open);
     };
 
+    const validate = (fieldValues = values) => {
+        let validationErrors = {...errors};
+        const checks = (value) => {
+            if(value.length > 75)
+                return "Field cannot contain more than 75 characters";
+            else if(!value)
+                return "Field cannot be empty";
+            else
+                return "";
+        }
+        if ('questionString' in fieldValues){
+            validationErrors.questionString = checks(fieldValues.questionString);
+        }
+        if ('answer' in fieldValues){
+            validationErrors.answer = checks(fieldValues.answer);
+        };
+        setErrors({...validationErrors});
+        if (fieldValues === values)
+            return Object.values(validationErrors).every(x => x === "");
+    };
+
     const handleChange = e => {
         const {name, value} = e.target;
         const fieldValue = {[name]: value};
         setValues({
             ...values, 
             ...fieldValue});
+        validate(fieldValue);
     }
 
     const handleSubmit = () => {
-        console.log(values)
-        if(!props.question){
-            props.api.crudActions(
-                "/questions/",
-                props.api.ACTION_TYPES.POST,
-                props.updateQuestions,
-                0,
-                values
-            )
-        }else{
-            props.api.crudActions(
-                "/questions/", 
-                props.api.ACTION_TYPES.PUT, 
-                props.updateQuestions, 
-                props.question.id,
-                values
-            );
+        if(validate()){
+            if(!props.question){
+                props.api.crudActions(
+                    "/questions/",
+                    props.api.ACTION_TYPES.POST,
+                    props.updateQuestions,
+                    0,
+                    values
+                )
+            }else{
+                props.api.crudActions(
+                    "/questions/", 
+                    props.api.ACTION_TYPES.PUT, 
+                    props.updateQuestions, 
+                    props.question.id,
+                    values
+                );
+            }
+            console.log("Reached Toggle")
+            toggleOpen()
         }
     };
 
@@ -95,7 +123,7 @@ const QuestionItem = props => {
             }
             <Dialog open={open} onClose={toggleOpen} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Question Form</DialogTitle>
-                <DialogContent>
+                <DialogContent className={classes.root}>
                     <DialogContentText>
                         Enter question details.
                   </DialogContentText>
@@ -106,6 +134,9 @@ const QuestionItem = props => {
                         value={values.questionString}
                         onChange={handleChange}
                         fullWidth
+                        multiline
+                        autoComplete="off"
+                        {...(errors.questionString && { error: true, helperText: errors.questionString })}
                     />
                     <TextField
                         name="answer"
@@ -114,6 +145,9 @@ const QuestionItem = props => {
                         value={values.answer}
                         onChange={handleChange}
                         fullWidth
+                        multiline
+                        autoComplete="off"
+                        {...(errors.answer && { error: true, helperText: errors.answer })}
                     />
                 </DialogContent>
                 <DialogActions>

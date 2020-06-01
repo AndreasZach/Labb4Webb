@@ -26,10 +26,9 @@ namespace Lab4Webb.Controllers
             _logger = logger;
         }
 
-        // GET: api/Hiscore
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<Object>> Get()
+        public async Task<ActionResult<IEnumerable<Object>>> Get()
         {
             var usersScore = await _context.Users
                 .Where(user => user.HiScore.Score > 0)
@@ -37,23 +36,11 @@ namespace Lab4Webb.Controllers
                 .ThenByDescending(user => user.HiScore.SubmitDate)
                 .Select(user => new { userName = user.UserName, hiScore = user.HiScore.Score, submitDate = user.HiScore.SubmitDate })
                 .ToListAsync();
+            if (usersScore.Count < 1)
+                return NotFound();
             return usersScore;
         }
 
-        // GET: api/Hiscore/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Hiscore
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT: api/Hiscore/5
         [HttpPut("{id}")]
         [Authorize]
         public async Task<ActionResult> Put(int id, [FromBody] int hiScore)
@@ -67,12 +54,6 @@ namespace Lab4Webb.Controllers
             }
 
             return Ok("HiScore successfully updated");
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

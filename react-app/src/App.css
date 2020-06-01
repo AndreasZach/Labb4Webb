@@ -1,3 +1,4 @@
+
 .App {
   text-align: center;
 }
@@ -28,8 +29,41 @@
   color: #61dafb;
 }
 
+body{
+  background-color: #E7DECD;
+  overflow-x: hidden;
+}
+
 .no-underline {
   text-decoration: none;
+}
+
+.bgcolor-powder{
+  background-color: #fbfaf8;
+}
+
+.bgcolor-blue{
+  background-color: #0A122A;
+}
+
+.incorrectAnswer{
+  color: #6b0504;
+}
+
+.correctAnswer{
+  color: green;
+}
+
+.color-green{
+  color: green;
+}
+
+.color-orange{
+  color: orange;
+}
+
+.color-crimson{
+  color: crimson;
 }
 
 @keyframes App-logo-spin {

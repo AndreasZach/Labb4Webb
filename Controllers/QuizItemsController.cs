@@ -28,10 +28,9 @@ namespace Lab4Webb.Controllers
             _logger = logger;
         }
         
-        // GET: api/QuizItems
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<QuizItem>> Get()
+        public async Task<ActionResult<IEnumerable<QuizItem>>> Get()
         {
             
             var quizItems = new List<QuizItem>();
@@ -42,6 +41,8 @@ namespace Lab4Webb.Controllers
             {
 
                 var question = await GetUniqueRandomQuestion(usedQuestionIds);
+                if (question == null)
+                    return NotFound();
                 var quizItem = new QuizItem
                 {
                     QuestionId = question.Id,
@@ -69,35 +70,12 @@ namespace Lab4Webb.Controllers
             var rdm = new Random();
             var questionCount = _ctx.Questions.Count();
             var question = await _ctx.Questions.Where(x => !usedIds.Contains(x.Id)).Skip(rdm.Next(questionCount - usedIds.Count())).Take(1).FirstOrDefaultAsync();
+            if (question == null)
+                return null;
             usedIds.Add(question.Id);
             return question;
         }
 
         private void LogError(string err) => _logger.LogError(err);
-
-        // GET: api/QuizItems/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public Task<QuizItem> Get(int id)
-        //{
-        //    return "value";
-        //}
-        //
-        //// POST: api/QuizItems
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-        //
-        //// PUT: api/QuizItems/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-        //
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

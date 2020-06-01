@@ -41,13 +41,9 @@ const HiScores = props => {
                 hiScores.map((user, index) => {
                     console.log(user.submitDate);
                     return(
-                        <div 
-                        key={index}  
-                        >
-                            <Grid container item alignItems={"center"}>
+                        <Grid key={index} container item xs={12} justify="center" alignItems={"center"}>
                                 <h3>{index + 1}. {user.userName}: {user.hiScore} points.</h3>
-                            </Grid>
-                        </div>
+                        </Grid>
                     );
                 })
                 :
