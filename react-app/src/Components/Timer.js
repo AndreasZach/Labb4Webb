@@ -16,7 +16,7 @@ const Timer = props => {
         }, 1000);
         return () => clearInterval(interval);
       }
-    }, [props.timeLeft, props.setTimeLeft, props.completed]);
+    }, [props]);
     
     const getColor = () => {
         if(props.timeLeft >= 20)

@@ -10,9 +10,8 @@ const HiScores = props => {
     useEffect(() => {
         if(!isLoaded){
             requestGetHiScores()
-            console.log(hiScores)
         }
-    });
+    },[isLoaded]);
 
     const requestGetHiScores = async () => {
         await api.crudActions(
@@ -39,7 +38,6 @@ const HiScores = props => {
             {
                 isLoaded ? 
                 hiScores.map((user, index) => {
-                    console.log(user.submitDate);
                     return(
                         <Grid key={index} container item xs={12} justify="center" alignItems={"center"}>
                                 <h3>{index + 1}. {user.userName}: {user.hiScore} points.</h3>

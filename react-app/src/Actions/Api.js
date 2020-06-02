@@ -22,6 +22,19 @@ export const register = async user => fetch(baseUrl + "/account/register", {
     body: JSON.stringify(user)
 });
 
+export const checkLogin = async () => {
+    let response = await fetch(baseUrl + "/account/checklogin", {
+            headers: setHeaders(),
+            method: 'get',
+            credentials: 'include'
+        })
+        .catch(error => error.status);
+    if(await response.status == 200)
+        return true;
+    else
+        return false;
+};
+
 
 export const getAll = async (route, needAuth) => fetch(baseUrl + route, {
     headers: setHeaders(),

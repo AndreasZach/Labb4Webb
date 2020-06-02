@@ -105,6 +105,13 @@ namespace Lab4Webb.Controllers
             return BadRequest("An error occured while creating your account.");
         }
 
+        [Authorize]
+        [Route("checklogin")]
+        public ActionResult CheckLogin()
+        {
+            return Ok();
+        }
+
         private async Task<string> GenerateJSONWebToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

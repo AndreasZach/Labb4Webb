@@ -7,6 +7,7 @@ import QuestionList from "./Components/QuestionList";
 import HiScores from "./Components/HiScores";
 import Header from "./Components/Header";
 import AccessDenied from "./Components/AccessDenied";
+import { checkLogin } from "./Actions/Api"
 import './App.css';
 
 function App() {
@@ -30,6 +31,11 @@ function App() {
   useEffect(() => {
     if(localStorage.getItem("userData")){
       let newData = JSON.parse(localStorage.getItem("userData"));
+      if(newData.id){
+        let loggedIn = checkLogin().then(response => response);
+        if(!loggedIn)
+          localStorage.setItem("userData", JSON.stringify(initialState));
+      }
       setCurrentUser(prevState => ({
           ...prevState,
           ...newData
