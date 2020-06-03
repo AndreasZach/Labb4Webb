@@ -32,14 +32,17 @@ function App() {
     if(localStorage.getItem("userData")){
       let newData = JSON.parse(localStorage.getItem("userData"));
       if(newData.id){
-        let loggedIn = checkLogin().then(response => response);
-        if(!loggedIn)
-          localStorage.setItem("userData", JSON.stringify(initialState));
+        checkLogin().then(response => {
+              if(!response){
+                localStorage.setItem("userData", JSON.stringify(initialState));
+              }else {
+                setCurrentUser(prevState => ({
+                  ...prevState,
+                  ...newData
+                }));
+              }
+        });
       }
-      setCurrentUser(prevState => ({
-          ...prevState,
-          ...newData
-      }));
     }
   }, [localStorage.getItem("userData")]);
 

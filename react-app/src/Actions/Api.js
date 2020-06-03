@@ -29,7 +29,7 @@ export const checkLogin = async () => {
             credentials: 'include'
         })
         .catch(error => error.status);
-    if(await response.status == 200)
+    if(response.status == 200)
         return true;
     else
         return false;

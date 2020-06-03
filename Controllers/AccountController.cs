@@ -84,7 +84,7 @@ namespace Lab4Webb.Controllers
                 var userExists = await _userManager.FindByNameAsync(user.UserName);
                 if (userExists != null)
                     return Ok(new { Error = "An account with that username already exists." });
-                var newUser = new User { UserName = user.UserName };
+                var newUser = new User { UserName = user.UserName, HiScore = new HiScore() };
                 newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, user.Password);
                 var result = await _userManager.CreateAsync(newUser);
                 if (result.Succeeded)
@@ -109,7 +109,11 @@ namespace Lab4Webb.Controllers
         [Route("checklogin")]
         public ActionResult CheckLogin()
         {
-            return Ok();
+            var loggedIn = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (loggedIn != null)
+                return Ok();
+            else
+                return NotFound();
         }
 
         private async Task<string> GenerateJSONWebToken(User user)

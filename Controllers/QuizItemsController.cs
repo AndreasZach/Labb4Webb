@@ -41,8 +41,10 @@ namespace Lab4Webb.Controllers
             {
 
                 var question = await GetUniqueRandomQuestion(usedQuestionIds);
-                if (question == null)
+                if (question == null && quizItems.Count < 1)
                     return NotFound();
+                if (question == null)
+                    continue;
                 var quizItem = new QuizItem
                 {
                     QuestionId = question.Id,
@@ -55,6 +57,8 @@ namespace Lab4Webb.Controllers
                 for (int j = 0; j < 3; j++)
                 {
                     var answerOption = await GetUniqueRandomQuestion(usedAnswerIds);
+                    if (answerOption == null)
+                        continue;
                     quizItem.AnswerOptions.Add(answerOption.Answer);
                 }
                 usedAnswerIds.Clear();
@@ -69,6 +73,8 @@ namespace Lab4Webb.Controllers
         {
             var rdm = new Random();
             var questionCount = _ctx.Questions.Count();
+            if (questionCount - usedIds.Count < 1)
+                return null;
             var question = await _ctx.Questions.Where(x => !usedIds.Contains(x.Id)).Skip(rdm.Next(questionCount - usedIds.Count())).Take(1).FirstOrDefaultAsync();
             if (question == null)
                 return null;

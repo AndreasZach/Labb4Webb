@@ -36,6 +36,14 @@ const Quiz = props => {
     };
 
     const quizLoaded = (data) =>{
+        data.forEach(quizItem => {
+            for(let i = quizItem.answerOptions.length - 1; i > 0; i--){
+                const j = Math.floor(Math.random() * i)
+                const temp = quizItem.answerOptions[i]
+                quizItem.answerOptions[i] = quizItem.answerOptions[j]
+                quizItem.answerOptions[j] = temp
+            };
+        });
         setNewState("quizItems", data);
         setNewState("isLoaded", true)
     };

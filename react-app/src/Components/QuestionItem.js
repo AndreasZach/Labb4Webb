@@ -21,6 +21,7 @@ const QuestionItem = props => {
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState(initialState);
     const [errors, setErrors] = useState({});
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         if(props.question)
@@ -71,6 +72,7 @@ const QuestionItem = props => {
                     0,
                     values
                 )
+                setValues(initialState);
             }else{
                 props.api.crudActions(
                     "/questions/", 
@@ -80,12 +82,13 @@ const QuestionItem = props => {
                     values
                 );
             }
-            console.log("Reached Toggle")
-            toggleOpen()
+            toggleOpen();
         }
     };
 
     const handleDelete = () => {
+        setDisabled(true);
+        console.log("disabled")
         props.api.crudActions(
             "/questions/", 
             props.api.ACTION_TYPES.DELETE, 
@@ -93,6 +96,8 @@ const QuestionItem = props => {
             props.question.id
         );
         props.updateQuestions();
+        setDisabled(false);
+        console.log("enabled")
     };
 
     return(
@@ -105,11 +110,11 @@ const QuestionItem = props => {
                         </Grid>
                         <Grid container justify="center" item xs={6}>
                             <ButtonGroup size="small">
-                                <Button variant="outlined" color="primary" onClick={toggleOpen}>
+                                <Button variant="outlined" color="primary" onClick={toggleOpen} disable={disabled.toString()}>
                                     <Edit color="primary" />
                                 </Button>
-                                <Button variant={"outlined"}  color={"secondary"}>
-                                    <Delete color={"secondary"} onClick={handleDelete} />
+                                <Button variant={"outlined"}  color={"secondary"} onClick={handleDelete} disable={disabled.toString()}>
+                                    <Delete color={"secondary"}  />
                                 </Button>
                             </ButtonGroup>
                         </Grid>

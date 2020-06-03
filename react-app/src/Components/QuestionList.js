@@ -51,6 +51,14 @@ const ManageQuestions = () => {
                 :
                 "Loading..."
             }
+            {
+                questions.length < 4 ?
+                <Grid container justify="center" item xs={12}>
+                    <h4 className="color-crimson">Quiz requires a minimum of 4 questions to function correctly.</h4>
+                </Grid>
+                :
+                null
+            }
         </Grid>
     );
 }
